@@ -70,7 +70,7 @@ function BlobCSP() {
 }
 
 module.exports = function init(sbot, conf) {
-  http.createServer(ServeBlobs(sbot)).listen(7777);
+  http.createServer(ServeBlobs(sbot)).listen(26835);
 };
 
 module.exports.init = module.exports;
