@@ -1,6 +1,8 @@
 # ssb-serve-blobs
 
-Scuttlebot plugin to serve blobs from a local http server on port 7777.
+Scuttlebot plugin to serve blobs from a local http server on port 26835.
+
+Note also this remark plugin for modifying markdown to link to the server: [remark-images-to-ssb-serve-blobs](https://gitlab.com/staltz/remark-images-to-ssb-serve-blobs)
 
 ## contribute
 
