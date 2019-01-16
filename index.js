@@ -5,6 +5,7 @@ var ident = require('pull-identify-filetype');
 var mime = require('mime-types');
 var URL = require('url');
 var http = require('http');
+var PORT = require('./port');
 
 function ServeBlobs(sbot) {
   return function(req, res, next) {
@@ -70,7 +71,7 @@ function BlobCSP() {
 }
 
 module.exports = function init(sbot, conf) {
-  http.createServer(ServeBlobs(sbot)).listen(26835);
+  http.createServer(ServeBlobs(sbot)).listen(PORT);
 };
 
 module.exports.init = module.exports;

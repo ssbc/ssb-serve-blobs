@@ -1,13 +1,46 @@
 # ssb-serve-blobs
 
-Scuttlebot plugin to serve blobs from a local http server on port 7777.
+Scuttlebot plugin to serve blobs from a local http server on port 26835.
 
-## contribute
+## usage
 
-We need pull requests for:
+Requires ssb-blobs plugin.
 
-* tests
-* configure the port through the SSB config object
+```diff
+ const createSbot = require('scuttlebot/index')
+   .use(require('scuttlebot/plugins/plugins'))
+   .use(require('scuttlebot/plugins/master'))
+   .use(require('scuttlebot/plugins/gossip'))
+   .use(require('scuttlebot/plugins/replicate'))
+   .use(require('ssb-friends'))
++  .use(require('ssb-blobs'))
+   .use(require('ssb-backlinks'))
+   .use(require('ssb-private'))
+   .use(require('ssb-about'))
+   .use(require('ssb-contacts'))
+   .use(require('ssb-query'))
++  .use(require('ssb-serve-blobs'))
+   .use(require('scuttlebot/plugins/invite'))
+   .use(require('scuttlebot/plugins/block'))
+   .use(require('scuttlebot/plugins/local'))
+```
+
+## utils
+
+```js
+const toUrl = require('ssb-serve-blobs/id-to-url')
+
+console.log(toUrl('&Pe5kTo/V/w4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac=.sha256'));
+// http://localhost:26835/%26Pe5kTo%2FV%2Fw4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac%3D.sha256
+```
+
+```js
+const fromUrl = require('ssb-serve-blobs/url-to-id')
+
+console.log(fromUrl('http://localhost:26835/%26Pe5kTo%2FV%2Fw4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac%3D.sha256'));
+// &Pe5kTo/V/w4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac=.sha256
+```
+
 
 ## License
 
