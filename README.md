@@ -19,7 +19,6 @@ Requires ssb-blobs plugin.
    .use(require('ssb-backlinks'))
    .use(require('ssb-private'))
    .use(require('ssb-about'))
-   .use(require('ssb-contacts'))
    .use(require('ssb-query'))
 +  .use(require('ssb-serve-blobs'))
    .use(require('scuttlebot/plugins/invite'))
