@@ -17,10 +17,12 @@
     "mime-types": "2.1.17"
   },
   "devDependencies": {
-    "tape": "^4.5.1"
+    "ssb-blobs": "^1.2.2",
+    "ssb-server": "^15.2.0",
+    "tape": "^4.13.2"
   },
   "scripts": {
-    "test": ":"
+    "test": "node test"
   },
   "license": "MIT"
 }

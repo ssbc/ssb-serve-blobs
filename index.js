@@ -71,7 +71,13 @@ function BlobCSP() {
 }
 
 module.exports = function init(sbot, conf) {
-  http.createServer(ServeBlobs(sbot)).listen(PORT);
+  const server = http.createServer(ServeBlobs(sbot)).listen(PORT);
+
+  // Ensure that HTTP server is closed when the SSB server closes.
+  sbot.close.hook(function (fn, args) {
+    server.close()
+    fn.apply(this, args)
+  })
 };
 
 module.exports.init = module.exports;
