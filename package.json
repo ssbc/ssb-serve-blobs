@@ -17,6 +17,7 @@
     "stream-to-pull-stream": "1.7.2"
   },
   "devDependencies": {
+    "pull-box-stream": "^1.0.13",
     "ssb-blobs": "^1.2.2",
     "ssb-server": "^15.2.0",
     "tape": "^4.13.2"

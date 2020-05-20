@@ -6,13 +6,23 @@ var mime = require('mime-types');
 var URL = require('url');
 var http = require('http');
 var PORT = require('./port');
+const { createUnboxStream } = require('pull-box-stream')
+
+const createUnboxTransform = (queryParam) => {
+  const keyBase64 = queryParam.slice(0, 44)
+  const keyBytes = Buffer.from(keyBase64, 'base64')
+  const nonce = Buffer.alloc(24, 0);
+  return createUnboxStream(keyBytes, nonce);
+}
 
 function ServeBlobs(sbot) {
   return function(req, res, next) {
     var parsed = URL.parse(req.url, true);
+
     var hash = decodeURIComponent(parsed.pathname.slice(1));
     waitFor(hash, function(_, has) {
       if (!has) return respond(res, 404, 'File not found');
+
       // optional name override
       if (parsed.query.name) {
         res.setHeader(
@@ -21,9 +31,12 @@ function ServeBlobs(sbot) {
         );
       }
 
+      const haveDecryptionKey = parsed.query.unbox != null;
+      const transform = haveDecryptionKey ? createUnboxTransform(parsed.query.unbox) : null;
+
       // serve
       res.setHeader('Content-Security-Policy', BlobCSP());
-      respondSource(res, sbot.blobs.get(hash), false);
+      respondSource(res, pull(sbot.blobs.get(hash), transform), false);
     });
   };
 
@@ -81,3 +94,4 @@ module.exports = function init(sbot, conf) {
 };
 
 module.exports.init = module.exports;
+
