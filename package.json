@@ -10,11 +10,11 @@
   },
   "main": "index.js",
   "dependencies": {
+    "mime-types": "2.1.17",
     "pull-cat": "1.1.11",
-    "pull-stream": "^3.3.0",
-    "stream-to-pull-stream": "1.7.2",
     "pull-identify-filetype": "1.1.0",
-    "mime-types": "2.1.17"
+    "pull-stream": "^3.3.0",
+    "stream-to-pull-stream": "1.7.2"
   },
   "devDependencies": {
     "ssb-blobs": "^1.2.2",
