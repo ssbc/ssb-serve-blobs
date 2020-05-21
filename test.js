@@ -68,10 +68,10 @@ tape("encrypted blobs are accessible", async (t) => {
 
   pull(
     pull.values(data),
-    server.blobs.add((err, val) => {
-      const encodedKey = encodeURIComponent(key.toString("base64"));
-      const url = `${toUrl(val)}?unbox=${encodedKey}.boxs`;
+    server.blobs.add((err, id) => {
       t.error(err);
+
+      const url = toUrl(id, { unbox: key });
       http
         .get(url, (res) => {
           const data = [];

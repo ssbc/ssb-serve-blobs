@@ -2,17 +2,18 @@ var pull = require('pull-stream');
 var cat = require('pull-cat');
 var toPull = require('stream-to-pull-stream');
 var ident = require('pull-identify-filetype');
+var { createUnboxStream } = require('pull-box-stream');
 var mime = require('mime-types');
 var URL = require('url');
 var http = require('http');
 var PORT = require('./port');
-const { createUnboxStream } = require('pull-box-stream')
+
+const zeros = Buffer.alloc(24, 0);
 
 const createUnboxTransform = (queryParam) => {
   const keyBase64 = queryParam.slice(0, 44)
   const keyBytes = Buffer.from(keyBase64, 'base64')
-  const nonce = Buffer.alloc(24, 0);
-  return createUnboxStream(keyBytes, nonce);
+  return createUnboxStream(keyBytes, zeros);
 }
 
 function ServeBlobs(sbot) {
