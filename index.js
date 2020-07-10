@@ -6,7 +6,8 @@ var { createUnboxStream } = require('pull-box-stream');
 var mime = require('mime-types');
 var URL = require('url');
 var http = require('http');
-var PORT = require('./port');
+var DEFAULT_PORT = require('./port');
+var get = require('lodash.get')
 
 const zeros = Buffer.alloc(24, 0);
 
@@ -16,7 +17,9 @@ const createUnboxTransform = (queryParam) => {
   return createUnboxStream(keyBytes, zeros);
 }
 
-function ServeBlobs(sbot) {
+function ServeBlobs(sbot, config) {
+  const corsEnabled = get(config, 'serveBlobs.cors', false)
+
   return function(req, res, next) {
     var parsed = URL.parse(req.url, true);
 
@@ -37,6 +40,9 @@ function ServeBlobs(sbot) {
 
       // serve
       res.setHeader('Content-Security-Policy', BlobCSP());
+      if (corsEnabled) {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+      }
       respondSource(res, pull(sbot.blobs.get(hash), transform), false);
     });
   };
@@ -84,8 +90,10 @@ function BlobCSP() {
   return 'default-src none; sandbox';
 }
 
-module.exports = function init(sbot, conf) {
-  const server = http.createServer(ServeBlobs(sbot)).listen(PORT);
+module.exports = function init(sbot, config) {
+  const port = get(config, 'serveBlobs.port', DEFAULT_PORT)
+
+  const server = http.createServer(ServeBlobs(sbot, config)).listen(port);
 
   // Ensure that HTTP server is closed when the SSB server closes.
   sbot.close.hook(function (fn, args) {
