@@ -10,6 +10,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "lodash.get": "^4.4.2",
     "mime-types": "2.1.17",
     "pull-cat": "1.1.11",
     "pull-identify-filetype": "1.1.0",
