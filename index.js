@@ -18,9 +18,9 @@ const createUnboxTransform = (queryParam) => {
 }
 
 function ServeBlobs(sbot, config) {
-  return function(req, res, next) {
-    const corsEnabled = get(config, 'serveBlobs.cors', false)
+  const corsEnabled = get(config, 'serveBlobs.cors', false)
 
+  return function(req, res, next) {
     var parsed = URL.parse(req.url, true);
 
     var hash = decodeURIComponent(parsed.pathname.slice(1));
