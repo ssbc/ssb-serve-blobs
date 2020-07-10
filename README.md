@@ -26,6 +26,28 @@ Requires ssb-blobs plugin.
    .use(require('scuttlebot/plugins/local'))
 ```
 
+## Example usage
+
+```js
+const Stack = require('secret-stack')
+const caps = require('ssb-caps')
+
+
+const stack = Stack({ caps })
+  .use(require('ssb-db'))          // << required
+  .use(require('ssb-blobs'))
+  .use(require('ssb-serve-blobs')) // needs: blobs
+
+const config = {
+   // see ssb-config for other needed config
+   serveBlobs: {
+      cors: true, // enable cors
+      port: 3921 // set the port to serve blobs from (default: 26835)
+   }
+}
+const server = stack(config)
+```
+
 ## utils
 
 ```js
