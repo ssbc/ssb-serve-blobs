@@ -42,6 +42,7 @@ const config = {
    // see ssb-config for other needed config
    serveBlobs: {
       cors: true, // enable cors
+      csp: "default-src 'self';", // custom content security policy (default: 'default-src none; sandbox')
       port: 3921 // set the port to serve blobs from (default: 26835)
    }
 }

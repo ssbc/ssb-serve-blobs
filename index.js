@@ -19,6 +19,7 @@ const createUnboxTransform = (queryParam) => {
 
 function ServeBlobs(sbot, config) {
   const corsEnabled = get(config, 'serveBlobs.cors', false)
+  const blobCSP = get(config, 'serveBlobs.csp', 'default-src none; sandbox')
 
   return function(req, res, next) {
     var parsed = URL.parse(req.url, true);
@@ -39,7 +40,7 @@ function ServeBlobs(sbot, config) {
       const transform = haveDecryptionKey ? createUnboxTransform(parsed.query.unbox) : null;
 
       // serve
-      res.setHeader('Content-Security-Policy', BlobCSP());
+      res.setHeader('Content-Security-Policy', blobCSP);
       if (corsEnabled) {
         res.setHeader('Access-Control-Allow-Origin', '*');
       }
@@ -84,10 +85,6 @@ function respondSource(res, source, wrap) {
 function respond(res, status, message) {
   res.writeHead(status);
   res.end(message);
-}
-
-function BlobCSP() {
-  return 'default-src none; sandbox';
 }
 
 module.exports = function init(sbot, config) {
