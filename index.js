@@ -7,7 +7,6 @@ var mime = require('mime-types');
 var URL = require('url');
 var http = require('http');
 var DEFAULT_PORT = require('./port');
-var get = require('lodash.get')
 
 const zeros = Buffer.alloc(24, 0);
 
@@ -18,8 +17,12 @@ const createUnboxTransform = (queryParam) => {
 }
 
 function ServeBlobs(sbot, config) {
-  const corsEnabled = get(config, 'serveBlobs.cors', false)
-  const blobCSP = get(config, 'serveBlobs.csp', 'default-src none; sandbox')
+  const corsEnabled = config && config.serveBlobs && typeof config.serveBlobs.cors === 'boolean'
+    ? config.serveBlobs.cors
+    : false
+  const blobCSP = config && config.serveBlobs && typeof config.serveBlobs.csp === 'string'
+    ? config.serveBlobs.csp
+    : 'default-src none; sandbox'
 
   return function(req, res, next) {
     var parsed = URL.parse(req.url, true);
@@ -88,7 +91,9 @@ function respond(res, status, message) {
 }
 
 module.exports = function init(sbot, config) {
-  const port = get(config, 'serveBlobs.port', DEFAULT_PORT)
+  const port = config && config.serveBlobs && typeof config.serveBlobs.port === 'number'
+    ? config.serveBlobs.port
+    : DEFAULT_PORT
 
   const server = http.createServer(ServeBlobs(sbot, config)).listen(port);
 
