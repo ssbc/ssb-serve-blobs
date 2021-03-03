@@ -6,10 +6,14 @@ const { createBoxStream } = require("pull-box-stream");
 const crypto = require("crypto");
 
 const toUrl = require("./id-to-url");
+const port = 10000 + Math.floor(Math.random() * 9000)
 
-const server = ssbServer.use(require("ssb-blobs")).use(require("./"))({
-  temp: true,
-});
+const server = ssbServer
+  .use(require("ssb-blobs"))
+  .use(require("./"))({
+    temp: true,
+    serveBlobs: { port }
+  });
 
 tape("blobs are accessible", (t) => {
   const original = "hello world";
@@ -20,7 +24,7 @@ tape("blobs are accessible", (t) => {
     server.blobs.add((err, val) => {
       t.error(err);
       http
-        .get(toUrl(val), (res) => {
+        .get(toUrl(val, { port }), (res) => {
           const data = [];
           res
             .on("data", (chunk) => data.push(chunk))
@@ -71,7 +75,7 @@ tape("encrypted blobs are accessible", async (t) => {
     server.blobs.add((err, id) => {
       t.error(err);
 
-      const url = toUrl(id, { unbox: key });
+      const url = toUrl(id, { unbox: key, port });
       http
         .get(url, (res) => {
           const data = [];
