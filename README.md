@@ -62,6 +62,9 @@ console.log(toUrl(blobId));
 
 console.log(toUrl(blobId, { unbox: unboxKey }));
 // http://localhost:26835/%26d8kM9RXf5zvvy%2BAzlQ%2F%2FJbCF0AEJelTl6m03u3dVVj4%3D.sha256?unbox=uU0nuZNNPgilLlLX2n2r%2BsSE7%2BN6U4DukIj3rOLvzek%3D
+
+console.log(toUrl(blobId, { port: 6000 }));
+// http://localhost:6000/%26d8kM9RXf5zvvy%2BAzlQ%2F%2FJbCF0AEJelTl6m03u3dVVj4%3D.sha256
 ```
 
 ```js
