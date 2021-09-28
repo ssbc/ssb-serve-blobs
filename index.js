@@ -1,8 +1,7 @@
 const http = require('http');
 const urlParse = require('url-parse');
 const pull = require('pull-stream');
-const identify = require('identify-filetype');
-const mime = require('mime-types');
+const FileType = require('file-type');
 const {createUnboxStream} = require('pull-box-stream');
 const BlobsHttp = require('multiblob-http');
 const DEFAULT_PORT = require('./port');
@@ -51,7 +50,7 @@ function ServeBlobs(sbot, config) {
 
   function getBlobHead(hash, cb) {
     pull(
-      sbot.blobs.getSlice({hash, start: 0, end: 32}),
+      sbot.blobs.getSlice({hash, start: 0, end: 4100}),
       pull.take(1),
       pull.collect((err, [buf]) => {
         if (err) cb(err);
@@ -60,16 +59,16 @@ function ServeBlobs(sbot, config) {
     );
   }
 
-  function getContentType(buf) {
-    const type = identify(buf);
-    if (!type) return null;
-    return mime.lookup(type);
+  function getContentType(buf, cb) {
+    FileType.fromBuffer(buf).then((result) => {
+      if (result && result.mime) cb(null, result.mime);
+      else cb(null, null);
+    });
   }
 
-  function setContentTypeOnReqURL(buf, req) {
+  function setContentTypeOnReqURL(contentType, req) {
     const u = urlParse(FAKE_HOST + req.url, true);
-    const contentType = getContentType(buf);
-    if (contentType) u.set('query', {...u.query, contentType});
+    u.set('query', {...u.query, contentType});
     req.url = u.toString().replace(FAKE_HOST, '');
   }
 
@@ -84,8 +83,11 @@ function ServeBlobs(sbot, config) {
       if (err || !has) return handler(req, res, next);
       getBlobHead(hash, (err, buf) => {
         if (err || !buf) return handler(req, res, next);
-        setContentTypeOnReqURL(buf, req);
-        handler(req, res, next);
+        getContentType(buf, (err, contentType) => {
+          if (err || !contentType) return handler(req, res, next);
+          setContentTypeOnReqURL(contentType, req);
+          handler(req, res, next);
+        });
       });
     });
   };
