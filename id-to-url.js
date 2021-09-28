@@ -1,4 +1,4 @@
-var DEFAULT_PORT = require('./port');
+const DEFAULT_PORT = require('./port');
 
 module.exports = function idToUrl(blobId, params) {
   const port = (params && params.port) || DEFAULT_PORT;
@@ -7,5 +7,5 @@ module.exports = function idToUrl(blobId, params) {
     ? `?unbox=${encodeURIComponent(params.unbox.toString('base64'))}`
     : '';
 
-  return `http://localhost:${port}/${blobRef}${paramsStr}`;
+  return `http://localhost:${port}/get/${blobRef}${paramsStr}`;
 }

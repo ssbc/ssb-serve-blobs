@@ -58,19 +58,19 @@ const blobId = '&d8kM9RXf5zvvy+AzlQ//JbCF0AEJelTl6m03u3dVVj4=.sha256'
 const unboxKey = 'uU0nuZNNPgilLlLX2n2r+sSE7+N6U4DukIj3rOLvzek='
 
 console.log(toUrl(blobId));
-// http://localhost:26835/%26d8kM9RXf5zvvy%2BAzlQ%2F%2FJbCF0AEJelTl6m03u3dVVj4%3D.sha256
+// http://localhost:26835/get/%26d8kM9RXf5zvvy%2BAzlQ%2F%2FJbCF0AEJelTl6m03u3dVVj4%3D.sha256
 
 console.log(toUrl(blobId, { unbox: unboxKey }));
-// http://localhost:26835/%26d8kM9RXf5zvvy%2BAzlQ%2F%2FJbCF0AEJelTl6m03u3dVVj4%3D.sha256?unbox=uU0nuZNNPgilLlLX2n2r%2BsSE7%2BN6U4DukIj3rOLvzek%3D
+// http://localhost:26835/get/%26d8kM9RXf5zvvy%2BAzlQ%2F%2FJbCF0AEJelTl6m03u3dVVj4%3D.sha256?unbox=uU0nuZNNPgilLlLX2n2r%2BsSE7%2BN6U4DukIj3rOLvzek%3D
 
 console.log(toUrl(blobId, { port: 6000 }));
-// http://localhost:6000/%26d8kM9RXf5zvvy%2BAzlQ%2F%2FJbCF0AEJelTl6m03u3dVVj4%3D.sha256
+// http://localhost:6000/get/%26d8kM9RXf5zvvy%2BAzlQ%2F%2FJbCF0AEJelTl6m03u3dVVj4%3D.sha256
 ```
 
 ```js
 const fromUrl = require('ssb-serve-blobs/url-to-id')
 
-console.log(fromUrl('http://localhost:26835/%26Pe5kTo%2FV%2Fw4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac%3D.sha256'));
+console.log(fromUrl('http://localhost:26835/get/%26Pe5kTo%2FV%2Fw4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac%3D.sha256'));
 // &Pe5kTo/V/w4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac=.sha256
 ```
 

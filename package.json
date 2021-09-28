@@ -1,23 +1,29 @@
 {
   "name": "ssb-serve-blobs",
   "description": "Serve blobs from a local http server",
-  "author": "Andre Staltz (staltz.com)",
   "version": "2.6.0",
+  "author": "Andre Staltz (staltz.com)",
+  "contributors": [
+    "Charles Lehner",
+    "Cherese Eriepa",
+    "'Dominic Tarr' <dominic.tarr@gmail.com> (dominictarr.com)"
+  ],
   "homepage": "https://github.com/ssbc/ssb-serve-blobs",
   "repository": {
     "type": "git",
     "url": "git://github.com/ssbc/ssb-serve-blobs.git"
   },
   "main": "index.js",
+  "files": [
+    "*.js",
+    "!test.js"
+  ],
   "dependencies": {
-    "mime-types": "2.1.17",
-    "pull-cat": "1.1.11",
-    "pull-identify-filetype": "1.1.0",
     "pull-stream": "^3.3.0",
-    "stream-to-pull-stream": "1.7.2"
+    "pull-box-stream": "^1.0.13",
+    "multiblob-http": "~1.0.0"
   },
   "devDependencies": {
-    "pull-box-stream": "^1.0.13",
     "ssb-blobs": "^1.2.2",
     "ssb-server": "^15.2.0",
     "tape": "^4.13.2"
