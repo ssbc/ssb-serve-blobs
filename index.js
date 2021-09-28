@@ -60,10 +60,15 @@ function ServeBlobs(sbot, config) {
   }
 
   function getContentType(buf, cb) {
-    FileType.fromBuffer(buf).then((result) => {
-      if (result && result.mime) cb(null, result.mime);
-      else cb(null, null);
-    });
+    FileType.fromBuffer(buf).then(
+      (result) => {
+        if (result && result.mime) cb(null, result.mime);
+        else cb(null, null);
+      },
+      (err) => {
+        cb(err);
+      },
+    );
   }
 
   function setContentTypeOnReqURL(contentType, req) {
