@@ -1,11 +1,14 @@
 const http = require('http');
 const urlParse = require('url-parse');
 const pull = require('pull-stream');
+const identify = require('identify-filetype');
+const mime = require('mime-types');
 const {createUnboxStream} = require('pull-box-stream');
 const BlobsHttp = require('multiblob-http');
 const DEFAULT_PORT = require('./port');
 
 const zeros = Buffer.alloc(24, 0);
+const FAKE_HOST = 'http://makeurlparseright.com';
 
 function ServeBlobs(sbot, config) {
   const corsEnabled =
@@ -13,9 +16,7 @@ function ServeBlobs(sbot, config) {
       ? config.serveBlobs.cors
       : false;
 
-  const PREFIX = '';
-
-  const handler = BlobsHttp(sbot.blobs, PREFIX, {
+  const handler = BlobsHttp(sbot.blobs, /* prefix */ '', {
     size: false,
     cors: corsEnabled,
     readonly: true,
@@ -35,21 +36,57 @@ function ServeBlobs(sbot, config) {
     },
   });
 
-  return function (req, res, next) {
-    if (req.url.substring(0, PREFIX.length) !== PREFIX) return next();
-    if (!(req.method === 'GET' || req.method === 'HEAD')) return next();
-
-    const u = urlParse('http://makeurlparseright.com' + req.url, true)
-    const hash = decodeURIComponent(
-      u.pathname.substring((PREFIX + '/get/').length),
-    );
+  function ensureHasBlob(hash, cb) {
     //check if we don't already have this, tell blobs we want it, if necessary.
     sbot.blobs.has(hash, function (err, has) {
-      if (has) handler(req, res, next);
-      else
+      if (has) {
+        cb(null, true);
+      } else {
         sbot.blobs.want(hash, function (err, has) {
-          handler(req, res, next);
+          cb(err, has);
         });
+      }
+    });
+  }
+
+  function getBlobHead(hash, cb) {
+    pull(
+      sbot.blobs.getSlice({hash, start: 0, end: 32}),
+      pull.take(1),
+      pull.collect((err, [buf]) => {
+        if (err) cb(err);
+        else cb(null, buf);
+      }),
+    );
+  }
+
+  function getContentType(buf) {
+    const type = identify(buf);
+    if (!type) return null;
+    return mime.lookup(type);
+  }
+
+  function setContentTypeOnReqURL(buf, req) {
+    const u = urlParse(FAKE_HOST + req.url, true);
+    const contentType = getContentType(buf);
+    if (contentType) u.set('query', {...u.query, contentType});
+    req.url = u.toString().replace(FAKE_HOST, '');
+  }
+
+  return function (req, res, next) {
+    if (!(req.method === 'GET' || req.method === 'HEAD')) return next();
+
+    const hash = decodeURIComponent(
+      urlParse(FAKE_HOST + req.url, true).pathname.substr('/get/'.length),
+    );
+
+    ensureHasBlob(hash, (err, has) => {
+      if (err || !has) return handler(req, res, next);
+      getBlobHead(hash, (err, buf) => {
+        if (err || !buf) return handler(req, res, next);
+        setContentTypeOnReqURL(buf, req);
+        handler(req, res, next);
+      });
     });
   };
 }
