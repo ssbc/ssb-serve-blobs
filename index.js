@@ -1,5 +1,5 @@
-const URL = require('url');
 const http = require('http');
+const urlParse = require('url-parse');
 const pull = require('pull-stream');
 const {createUnboxStream} = require('pull-box-stream');
 const BlobsHttp = require('multiblob-http');
@@ -39,7 +39,7 @@ function ServeBlobs(sbot, config) {
     if (req.url.substring(0, PREFIX.length) !== PREFIX) return next();
     if (!(req.method === 'GET' || req.method === 'HEAD')) return next();
 
-    const u = URL.parse('http://makeurlparseright.com' + req.url);
+    const u = urlParse('http://makeurlparseright.com' + req.url, true)
     const hash = decodeURIComponent(
       u.pathname.substring((PREFIX + '/get/').length),
     );

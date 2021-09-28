@@ -21,7 +21,8 @@
   "dependencies": {
     "pull-stream": "^3.3.0",
     "pull-box-stream": "^1.0.13",
-    "multiblob-http": "~1.0.0"
+    "multiblob-http": "~1.0.0",
+    "url-parse": "~1.5.3"
   },
   "devDependencies": {
     "ssb-blobs": "^1.2.2",
