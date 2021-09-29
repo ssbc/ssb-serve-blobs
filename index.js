@@ -14,10 +14,14 @@ function ServeBlobs(sbot, config) {
     config && config.serveBlobs && typeof config.serveBlobs.cors === 'boolean'
       ? config.serveBlobs.cors
       : false;
+  const csp = config && config.serveBlobs && typeof config.serveBlobs.csp === 'string'
+    ? config.serveBlobs.csp
+    : 'default-src none; sandbox'
 
   const handler = BlobsHttp(sbot.blobs, /* prefix */ '', {
     size: false,
     cors: corsEnabled,
+    csp,
     readonly: true,
     transform: function (q) {
       if (q.unbox) {
