@@ -94,6 +94,38 @@ tape('encrypted blobs are accessible', async (t) => {
   );
 });
 
+tape('encrypted blobs are accessible (2)', async (t) => {
+  t.plan(2);
+  const original = 'hello world';
+  const {key, data} = await encrypt(original);
+
+  pull(
+    pull.values(data),
+    server.blobs.add((err, id) => {
+      t.error(err);
+
+      const x = id + '?unbox=' + key.toString('base64') + '.boxs';
+      const url = toUrl(x, {port});
+      http
+        .get(url, (res) => {
+          const data = [];
+          res
+            .on('data', (chunk) => data.push(chunk))
+            .on('end', () =>
+              // Ensure that the blob matches this file's contents exactly.
+              t.equals(
+                data.join(''),
+                original,
+                'blob upload matches original file',
+              ),
+            );
+        })
+        .on('error', t.error)
+        .end();
+    }),
+  );
+});
+
 tape('server exits', (t) => {
   server.close(t.end);
 });
