@@ -22,8 +22,7 @@
     "file-type": "<=16.5.1",
     "multiblob-http": "^1.2.0",
     "pull-box-stream": "^1.0.13",
-    "pull-stream": "^3.3.0",
-    "url-parse": "~1.5.3"
+    "pull-stream": "^3.3.0"
   },
   "devDependencies": {
     "ssb-blobs": "^1.2.2",

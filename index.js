@@ -1,5 +1,4 @@
 const http = require('http');
-const urlParse = require('url-parse');
 const pull = require('pull-stream');
 const FileType = require('file-type');
 const {createUnboxStream} = require('pull-box-stream');
@@ -77,16 +76,16 @@ function ServeBlobs(sbot, config) {
   }
 
   function setContentTypeOnReqURL(contentType, req) {
-    const u = urlParse(FAKE_HOST + req.url, true);
-    u.set('query', {...u.query, contentType});
-    req.url = u.toString().replace(FAKE_HOST, '');
+    const u = new URL(FAKE_HOST + req.url);
+    u.searchParams.set('contentType', contentType);
+    req.url = u.href.replace(FAKE_HOST, '');
   }
 
   return function (req, res, next) {
     if (!(req.method === 'GET' || req.method === 'HEAD')) return next();
 
     const hash = decodeURIComponent(
-      urlParse(FAKE_HOST + req.url, true).pathname.substr('/get/'.length),
+      new URL(FAKE_HOST + req.url).pathname.substring('/get/'.length),
     );
 
     ensureHasBlob(hash, (err, has) => {
