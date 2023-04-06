@@ -19,18 +19,20 @@
     "!test.js"
   ],
   "dependencies": {
-    "file-type": "<=16.5.1",
+    "file-type": "^18.2.1",
     "multiblob-http": "^1.2.0",
     "pull-box-stream": "^1.0.13",
     "pull-stream": "^3.3.0"
   },
   "devDependencies": {
+    "pull-file": "^1.1.0",
+    "scuttle-testbot": "^1.11.0",
     "ssb-blobs": "^1.2.2",
-    "ssb-server": "^15.2.0",
+    "tap-arc": "^0.3.5",
     "tape": "^4.13.2"
   },
   "scripts": {
-    "test": "node test"
+    "test": "tape test/*.test.js | tap-arc"
   },
   "license": "MIT"
 }
