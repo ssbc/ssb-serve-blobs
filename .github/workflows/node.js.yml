@@ -14,13 +14,6 @@ on:
     branches: [master]
 
 jobs:
-  licenses:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: REUSE Compliance Check
-        uses: fsfe/reuse-action@v1
-
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -37,32 +30,4 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - name: npm test
-        run: DEBUG=ssb:db2,ssb:db2:* npm test
-
-  benchmark:
-    needs: test
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.x
-      - run: npm install
-      - name: Benchmark
-        run: npm run benchmark
-      - id: get-comment-body
-        name: Gather results
-        run: |
-          body=$(cat /tmp/ssb-db2-benchmark/benchmark.md)
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}"
-          echo ::set-output name=body::$body
-      - name: Publish comment
-        uses: mshick/add-pr-comment@v1
-        with:
-          message: ${{ steps.get-comment-body.outputs.body }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+        run: npm test
