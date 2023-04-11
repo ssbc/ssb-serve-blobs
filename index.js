@@ -1,9 +1,8 @@
-const FileType = import('file-type');
 const http = require('http');
 const pull = require('pull-stream');
+const FileType = require('file-type');
 const {createUnboxStream} = require('pull-box-stream');
 const BlobsHttp = require('multiblob-http');
-
 const DEFAULT_PORT = require('./port');
 
 const zeros = Buffer.alloc(24, 0);
@@ -65,26 +64,21 @@ function ServeBlobs(sbot, config) {
   }
 
   function getContentType(buf, cb) {
-    FileType
-      .then(ft => ft.fileTypeFromBuffer(buf))
-      .then(
-        (result) => {
-          if (result && result.mime) cb(null, result.mime);
-          else cb(null, null);
-        },
-        (err) => {
-          cb(err);
-        },
-      );
+    FileType.fromBuffer(buf).then(
+      (result) => {
+        if (result && result.mime) cb(null, result.mime);
+        else cb(null, null);
+      },
+      (err) => {
+        cb(err);
+      },
+    );
   }
 
   function setContentTypeOnReqURL(contentType, req) {
     const u = new URL(FAKE_HOST + req.url);
     u.searchParams.set('contentType', contentType);
     req.url = u.href.replace(FAKE_HOST, '');
-  }
-  function setContentTypeOnRes(contentType, res) {
-    res.setHeader('Content-Type', contentType);
   }
 
   return function (req, res, next) {
@@ -99,12 +93,8 @@ function ServeBlobs(sbot, config) {
       getBlobHead(hash, (err, buf) => {
         if (err || !buf) return handler(req, res, next);
         getContentType(buf, (err, contentType) => {
-          // NOTE this does not currently work for encrypted blobs, as at
-          // this point the blob is still encrypted. Decryption is handled
-          // by the transform passed to BlobsHttp
           if (err || !contentType) return handler(req, res, next);
           setContentTypeOnReqURL(contentType, req);
-          setContentTypeOnRes(contentType, res);
           handler(req, res, next);
         });
       });

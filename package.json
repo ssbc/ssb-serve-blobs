@@ -19,7 +19,7 @@
     "!test.js"
   ],
   "dependencies": {
-    "file-type": "^18.2.1",
+    "file-type": "^16.5.4",
     "multiblob-http": "^1.2.0",
     "pull-box-stream": "^1.0.13",
     "pull-stream": "^3.3.0"
