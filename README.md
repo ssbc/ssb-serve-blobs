@@ -76,6 +76,9 @@ const fromUrl = require('ssb-serve-blobs/url-to-id')
 
 console.log(fromUrl('http://localhost:26835/get/%26Pe5kTo%2FV%2Fw4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac%3D.sha256'))
 // &Pe5kTo/V/w4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac=.sha256
+
+console.log(fromUrl('http://localhost:12345/get/%26Pe5kTo%2FV%2Fw4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac%3D.sha256', {port: 12345}))
+// &Pe5kTo/V/w4MToasp1IuyMrMcCkQwDOdyzbyD5fy4ac=.sha256
 ```
 
 ## License

@@ -9,6 +9,8 @@ const path = require('path');
 const fs = require('fs')
 
 const toUrl = require('../id-to-url');
+const toBlobId = require ('../url-to-id')
+
 const port = 10000 + Math.floor(Math.random() * 9000);
 
 const server = ssbServer
@@ -137,6 +139,31 @@ tape('encrypted blobs are accessible (2)', async (t) => {
     }),
   );
 });
+
+
+tape('url-to-id throws on invalid port option', (t) => {
+  t.plan(1)
+
+  const blobId = '&btuHJeVcY6OZb4Nb21yMSDKH2ZW+otEe535CCCPfXug=.sha256'
+  const url = toUrl(blobId, {port})
+
+  try {
+    toBlobId(url, {port: 'abc'})
+    t.fail('should have thrown')
+  } catch (err) {
+    t.pass("handles bad port option")
+  }
+})
+
+
+tape('url-to-id uses valid port option', (t) => {
+  t.plan(1)
+
+  const blobId = '&btuHJeVcY6OZb4Nb21yMSDKH2ZW+otEe535CCCPfXug=.sha256'
+  const url = toUrl(blobId, {port})
+
+  t.equals(toBlobId(url, {port}), blobId)
+})
 
 tape('server exits', (t) => {
   server.close(t.end);
