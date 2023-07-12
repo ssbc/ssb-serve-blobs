@@ -1,7 +1,7 @@
 {
   "name": "ssb-serve-blobs",
   "description": "Serve blobs from a local http server",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "author": "Andre Staltz (staltz.com)",
   "contributors": [
     "Charles Lehner",
