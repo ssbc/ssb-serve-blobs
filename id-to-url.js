@@ -12,7 +12,7 @@ module.exports = function idToUrl(blobId, params) {
 
   url.pathname = `/get/${encodeURIComponent(pureBlobId)}`;
 
-  const unbox = extractKey(query) || (params && params.unbox && toString(params.unbox));
+  const unbox = extractKey(query) ?? (params?.unbox && toString(params.unbox));
   if (unbox) url.searchParams.set('unbox', unbox + '.boxs');
 
   return url.href
