@@ -7,7 +7,7 @@ module.exports = function idToUrl(blobId, params) {
 
   const [pureBlobId, query] = blobId.split('?');
 
-  if (params && params.hostname) url.hostname = params.hostname;
+  if (params?.hostname) url.hostname = params.hostname;
   if (params?.port) url.port = params.port;
 
   url.pathname = `/get/${encodeURIComponent(pureBlobId)}`;
