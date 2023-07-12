@@ -31,7 +31,7 @@ function extractKey (query) {
 
 function toString (key) {
   if (typeof key === 'string') return key
-  if (Buffer.isBuffer) return key.toString('base64')
+  if (Buffer.isBuffer(key)) return key.toString('base64')
 
   throw new Error('cannot coerce toString, unknown type: ' + typeof key)
 }
