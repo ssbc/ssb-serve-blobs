@@ -1,14 +1,37 @@
 const DEFAULT_PORT = require('./port');
 
-module.exports = function idToUrl(blobId, params) {
-  const port = (params && params.port) || DEFAULT_PORT;
-  const [pureBlobId, query] = blobId.split('?');
-  const blobRef = encodeURIComponent(pureBlobId);
-  const paramsStr = query
-    ? '?' + query
-    : params && params.unbox
-    ? `?unbox=${encodeURIComponent(params.unbox.toString('base64'))}.boxs`
-    : '';
+const base = `http://localhost:${DEFAULT_PORT}`
 
-  return `http://localhost:${port}/get/${blobRef}${paramsStr}`;
+module.exports = function idToUrl(blobId, params) {
+  const url = new URL(base)
+
+  const [pureBlobId, query] = blobId.split('?');
+
+  if (params && params.hostname) url.hostname = params.hostname;
+  if (params && params.port) url.port = params.port;
+
+  url.pathname = `/get/${encodeURIComponent(pureBlobId)}`;
+
+  const unbox = extractKey(query) || (params && params.unbox && toString(params.unbox));
+  if (unbox) url.searchParams.set('unbox', unbox + '.boxs');
+
+  return url.href
 };
+
+function extractKey (query) {
+  if (!query) return
+
+  return (
+    query.startsWith('unbox=') &&
+    query
+      .replace('unbox=', '')
+      .replace('.boxs', '')
+  )
+}
+
+function toString (key) {
+  if (typeof key === 'string') return key
+  if (Buffer.isBuffer) return key.toString('base64')
+
+  throw new Error('cannot coerce toString, unknown type: ' + typeof key)
+}
